@@ -7,10 +7,10 @@ print('==================================================')
 print('Beam Test Case 1: Linear Distributed Load Full Beam')
 print('==================================================')
 n_ed = int(input('Please enter degrees of freedom (only 2 is supported currently): ')) # degrees of freedom per node
-l = int(input('Please enter beam length in meters: ')) # Length of beam
-h = int(input('Please enter beam height in meters: ')) # Width of beam
+l = float(input('Please enter beam length in meters: ')) # Length of beam
+h = float(input('Please enter beam height in meters: ')) # Width of beam
 if n_ed == 3:
-    w = int(input('Please enter beam width in meters: ')) # Width of beam
+    w = float(input('Please enter beam width in meters: ')) # Width of beam
 xnum = int(input('Please enter number of x nodes: ')) # Number of horizontal nodes)
 ynum = int(input('Please enter number of y nodes: ')) # Number of vertical nodes
 if n_ed == 3:
@@ -43,6 +43,14 @@ if n_ed == 2:
 
     # Plot Node and Element Mesh
     plotting.mesh_Plot(nodes, elements, l, h)
+
+    ID, IEN = msh.generate_ID_IEN(nodes, elements, n_ed)
+
+
+    # Now it is time to add boundary conditions
+    ID = msh.apply_boundary_conditions(nodes, ID)
+
+
 
 
 
