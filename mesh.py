@@ -11,6 +11,12 @@ class Node:
         self.n_ed = n_ed
         self.point = point
         self.global_num = global_num
+        self.disp = np.zeros(n_ed)
+    
+    # displacement is an np array of the solved displacements of the node
+    def add_displacement(self, displacement):
+        self.disp = displacement
+
 
 
 # Each element contains an nparray of all the nodes per element
@@ -35,8 +41,6 @@ def nodes_List(nodes, n_ed, xnodes, ynodes, znodes=None):
                 nodes[i] = Node(n_ed, np.array([x, y]), i+1)
                 i = i + 1
     return nodes
-
-
 
 
 
@@ -104,12 +108,17 @@ def generate_ID_IEN(nodes, elements, n_ed):
 
 
 # Applies boundary conditions for a cantilever beam (fixed at x=0)
+# This also needs to return an updated number for the total number of equations
 def apply_boundary_conditions(nodes, ID):
     """
     Apply boundary conditions: fixed at x=0 (all DOFs set to 0).
     Renumber remaining DOFs contiguously to account for reduced equations.
     """
     n_ed, n_n = ID.shape
+
+    # Establish number of global equations
+    n_eq = n_ed * n_n
+
     # Initialize new ID array
     new_ID = np.zeros((n_ed, n_n), dtype=int)
     
@@ -130,7 +139,8 @@ def apply_boundary_conditions(nodes, ID):
                 new_ID[i, j] = dof_count
                 dof_count += 1
     
-    return new_ID
+    n_eq = dof_count - 1
+    return new_ID, n_eq
 
 
     
